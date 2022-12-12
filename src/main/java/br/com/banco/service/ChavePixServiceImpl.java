@@ -105,8 +105,8 @@ public class ChavePixServiceImpl implements ChavePixService{
         var cliente = clienteRestService.consultarClientePorNumeroConta(numeroConta);
 
         return (TipoClienteEnum.PF.name().equalsIgnoreCase(cliente.getTipoCliente())
-                && chavePixRepository.findByNumeroConta(numeroConta).size()> 4)
+                && chavePixRepository.findByNumeroConta(numeroConta).size()> LIMITE_DIGITOS_NUMERO_AGENCIA)
                 ||(TipoClienteEnum.PJ.name().equalsIgnoreCase(cliente.getTipoCliente())
-                && chavePixRepository.findByNumeroConta(numeroConta).size()> 19);
+                && chavePixRepository.findByNumeroConta(numeroConta).size()> LIMITE_DIGITOS_NUMERO_CONTA);
     }
 }
