@@ -56,14 +56,12 @@ public class ChavePixServiceImpl implements ChavePixService{
             entity.setUpdated(LocalDateTime.now());
             chavePixRepository.save(entity);
 
-            var dto = ChavePixDTO.builder().id(entity.getId())
+            return ChavePixDTO.builder().id(entity.getId())
                     .tipoChave(entity.getTipoChave()).valorChave(entity.getValorChave())
                     .tipoConta(entity.getTipoConta()).numeroAgencia(entity.getNumeroAgencia())
                     .NumeroConta(entity.getNumeroConta()).nomeCorrentista(entity.getNomeCorrentista())
                     .sobrenomeCorrentista(Objects.requireNonNull(entity.getSobrenomeCorrentista()))
                     .created(entity.getCreated()).updated(entity.getUpdated()).build();
-
-            return dto;
         }
         throw new ChavePixException("Chave já removida!");
     }
