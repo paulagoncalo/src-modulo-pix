@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -61,7 +62,7 @@ public class ChavePixServiceImpl implements ChavePixService{
                     .tipoConta(entity.getTipoConta()).numeroAgencia(entity.getNumeroAgencia())
                     .numeroConta(entity.getNumeroConta()).nomeCorrentista(entity.getNomeCorrentista())
                     .sobrenomeCorrentista(Objects.requireNonNull(entity.getSobrenomeCorrentista()))
-                    .created(entity.getCreated()).updated(entity.getUpdated()).build();
+                    .dataHoraInclusaoChave(entity.getCreated()).dataHoraInativacaoChave(String.valueOf(entity.getUpdated())).build();
         }
         throw new ChavePixException("Chave já removida!");
     }
@@ -69,18 +70,25 @@ public class ChavePixServiceImpl implements ChavePixService{
     @Override
     public ChavePixDTO consultarChavePorId(String id) throws ChaveNaoEncontradaException {
         var entity = chavePixRepository.findById(id).orElseThrow(() -> new ChaveNaoEncontradaException("Não foi encontrada chave para valor informado"));
+        return mapToDto(entity);
+    }
 
-        return ChavePixDTO.builder()
-                .id(entity.getId())
-                .tipoChave(entity.getTipoChave())
-                .valorChave(entity.getValorChave())
-                .tipoConta(entity.getTipoConta())
-                .numeroAgencia(entity.getNumeroAgencia())
-                .numeroConta(entity.getNumeroConta())
-                .nomeCorrentista(entity.getNomeCorrentista())
-                .sobrenomeCorrentista(Objects.nonNull(entity.getSobrenomeCorrentista()) ? entity.getSobrenomeCorrentista() : "")
-                .created(entity.getCreated())
-                .updated(entity.getUpdated()).build();
+    @Override
+    public ArrayList<ChavePixDTO> consultarChavePorAgenciaEConta(ChavePixDTO chavePixDTO) throws ChaveNaoEncontradaException {
+        var entity = chavePixRepository.findByNumeroAgenciaAndNumeroConta(chavePixDTO.getNumeroAgencia(), chavePixDTO.getNumeroConta()).orElseThrow(() -> new ChaveNaoEncontradaException("Não foi encontrada chave para valor informado"));
+        ArrayList<ChavePixDTO> chavePixdtoList = new ArrayList<>();
+        entity.forEach(chave -> chavePixdtoList.add(mapToDto(chave)));
+
+        return chavePixdtoList;
+    }
+
+    @Override
+    public ArrayList<ChavePixDTO> consultarChavePorTipoChave(String tipoChave) throws ChaveNaoEncontradaException {
+        var entity = chavePixRepository.findByTipoChave(tipoChave).orElseThrow(() -> new ChaveNaoEncontradaException("Não foi encontrada chave para valor informado"));
+        ArrayList<ChavePixDTO> chavePixdtoList = new ArrayList<>();
+        entity.forEach(chave -> chavePixdtoList.add(mapToDto(chave)));
+
+        return chavePixdtoList;
     }
 
     @Override
@@ -125,5 +133,19 @@ public class ChavePixServiceImpl implements ChavePixService{
                 && chavePixRepository.findByNumeroConta(numeroConta).size()> LIMITE_DIGITOS_NUMERO_AGENCIA)
                 ||(TipoClienteEnum.PJ.name().equalsIgnoreCase(cliente.getTipoCliente())
                 && chavePixRepository.findByNumeroConta(numeroConta).size()> LIMITE_DIGITOS_NUMERO_CONTA);
+    }
+
+    private ChavePixDTO mapToDto(ChavePixEntity entity){
+        return ChavePixDTO.builder()
+                .id(entity.getId())
+                .tipoChave(entity.getTipoChave())
+                .valorChave(entity.getValorChave())
+                .tipoConta(entity.getTipoConta())
+                .numeroAgencia(entity.getNumeroAgencia())
+                .numeroConta(entity.getNumeroConta())
+                .nomeCorrentista(entity.getNomeCorrentista())
+                .sobrenomeCorrentista(Objects.nonNull(entity.getSobrenomeCorrentista()) ? entity.getSobrenomeCorrentista() : "")
+                .dataHoraInclusaoChave(entity.getCreated())
+                .dataHoraInativacaoChave(entity.getIsActive() ? "" : String.valueOf(entity.getUpdated())).build();
     }
 }

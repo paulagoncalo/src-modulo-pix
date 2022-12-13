@@ -30,4 +30,14 @@ public class ChavePixController {
     public ResponseEntity<Object> consultarChavePixPorId(@PathVariable String id) throws ChaveNaoEncontradaException, ChavePixException {
         return ResponseEntity.ok(chavePixService.consultarChavePorId(id));
     }
+
+    @GetMapping("/consultar/chave/agencia-conta")
+    public ResponseEntity<Object> consultarChavePorAgenciaEConta(@RequestBody ChavePixDTO chavePixDTO) throws ChaveNaoEncontradaException, ChavePixException {
+        return ResponseEntity.ok(chavePixService.consultarChavePorAgenciaEConta(chavePixDTO));
+    }
+
+    @GetMapping("/consultar/chave/tipo")
+    public ResponseEntity<Object> consultarChavePorTipoChave(@RequestBody ChavePixDTO chavePixDTO) throws ChaveNaoEncontradaException, ChavePixException {
+        return ResponseEntity.ok(chavePixService.consultarChavePorTipoChave(chavePixDTO.getTipoChave()));
+    }
 }

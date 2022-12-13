@@ -2,6 +2,7 @@ package br.com.banco.dto;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -24,7 +25,6 @@ public class ChavePixDTO {
     @NonNull
     private String nomeCorrentista;
     private String sobrenomeCorrentista;
-
-    private LocalDateTime created;
-    private LocalDateTime updated;
+    private LocalDateTime dataHoraInclusaoChave;
+    private String dataHoraInativacaoChave;
 }
