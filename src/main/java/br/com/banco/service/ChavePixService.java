@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public interface ChavePixService {
 
     String cadastrarChavePix(ChavePixDTO chavePixDTO) throws ChavePixException;
-
     ChavePixDTO inativarChavePix(String id) throws ChaveNaoEncontradaException, ChavePixException;
+    ChavePixDTO consultarChavePorId(String id) throws ChaveNaoEncontradaException;
     Boolean isChaveValida(ChavePixDTO chavePixDTO) throws ClienteServiceException, ChavePixException;
 }

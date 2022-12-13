@@ -20,7 +20,7 @@ public class ChavePixDTO {
     @NonNull
     private Long numeroAgencia;
     @NonNull
-    private Long NumeroConta;
+    private Long numeroConta;
     @NonNull
     private String nomeCorrentista;
     private String sobrenomeCorrentista;

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import static br.com.banco.AppConstants.POST_CONSULTA;
+
 @Service
 @RequiredArgsConstructor
 public class ClienteRestService {
@@ -18,7 +20,7 @@ public class ClienteRestService {
         try {
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<ClienteDTO> response = restTemplate.getForEntity(appConfig.getModuloClienteBaseUrl()
-                    .concat("consulta/").concat(String.valueOf(numeroConta)), ClienteDTO.class);
+                    .concat(POST_CONSULTA).concat(String.valueOf(numeroConta)), ClienteDTO.class);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();

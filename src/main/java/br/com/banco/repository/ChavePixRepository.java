@@ -5,10 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ChavePixRepository extends JpaRepository<ChavePixEntity, String> {
 
     Boolean existsByValorChave(String valorChave);
     List<ChavePixEntity> findByNumeroConta(Long numeroConta);
+    Optional<ChavePixEntity> findByIdAndIsActive(String id, Boolean ativo);
 }

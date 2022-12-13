@@ -59,11 +59,28 @@ public class ChavePixServiceImpl implements ChavePixService{
             return ChavePixDTO.builder().id(entity.getId())
                     .tipoChave(entity.getTipoChave()).valorChave(entity.getValorChave())
                     .tipoConta(entity.getTipoConta()).numeroAgencia(entity.getNumeroAgencia())
-                    .NumeroConta(entity.getNumeroConta()).nomeCorrentista(entity.getNomeCorrentista())
+                    .numeroConta(entity.getNumeroConta()).nomeCorrentista(entity.getNomeCorrentista())
                     .sobrenomeCorrentista(Objects.requireNonNull(entity.getSobrenomeCorrentista()))
                     .created(entity.getCreated()).updated(entity.getUpdated()).build();
         }
         throw new ChavePixException("Chave já removida!");
+    }
+
+    @Override
+    public ChavePixDTO consultarChavePorId(String id) throws ChaveNaoEncontradaException {
+        var entity = chavePixRepository.findById(id).orElseThrow(() -> new ChaveNaoEncontradaException("Não foi encontrada chave para valor informado"));
+
+        return ChavePixDTO.builder()
+                .id(entity.getId())
+                .tipoChave(entity.getTipoChave())
+                .valorChave(entity.getValorChave())
+                .tipoConta(entity.getTipoConta())
+                .numeroAgencia(entity.getNumeroAgencia())
+                .numeroConta(entity.getNumeroConta())
+                .nomeCorrentista(entity.getNomeCorrentista())
+                .sobrenomeCorrentista(Objects.nonNull(entity.getSobrenomeCorrentista()) ? entity.getSobrenomeCorrentista() : "")
+                .created(entity.getCreated())
+                .updated(entity.getUpdated()).build();
     }
 
     @Override
