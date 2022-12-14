@@ -111,10 +111,10 @@ public class ChavePixServiceImpl implements ChavePixService{
 
     private void validaInformacoesRequest(ChavePixDTO chavePixDTO) throws ClienteServiceException, ChavePixException {
         if(Boolean.TRUE.equals(chavePixRepository.existsByValorChave(chavePixDTO.getValorChave())
-                || isQuantidadeChaveMaiorQueLimite(chavePixDTO.getNumeroConta())
                 || !isTipoContaValida(chavePixDTO.getTipoConta())
                 || String.valueOf(chavePixDTO.getNumeroAgencia()).length() > LIMITE_DIGITOS_NUMERO_AGENCIA
-                || String.valueOf(chavePixDTO.getNumeroConta()).length() > LIMITE_DIGITOS_NUMERO_CONTA))
+                || String.valueOf(chavePixDTO.getNumeroConta()).length() > LIMITE_DIGITOS_NUMERO_CONTA
+                || isQuantidadeChaveMaiorQueLimite(chavePixDTO.getNumeroConta())))
             throw new ChavePixException(null);
     }
 
