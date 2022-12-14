@@ -10,7 +10,7 @@ import br.com.banco.exceptions.ChavePixException;
 import br.com.banco.exceptions.ClienteServiceException;
 import br.com.banco.repository.ChavePixRepository;
 import br.com.banco.service.rest.ClienteRestService;
-import br.com.banco.utils.ValidadorChaveUtil;
+import br.com.banco.utils.ValidadorChaveUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
@@ -52,7 +52,7 @@ public class ChavePixServiceImpl implements ChavePixService{
     @Override
     public ChavePixDTO inativarChavePix(String id) throws ChaveNaoEncontradaException, ChavePixException {
         var entity = chavePixRepository.findById(id).orElseThrow(() -> new ChaveNaoEncontradaException("Não foi encontrada chave para valor informado"));
-        if (entity.getIsActive()){
+        if (Boolean.TRUE.equals(entity.getIsActive())){
             entity.setIsActive(Boolean.FALSE);
             entity.setUpdated(LocalDateTime.now());
             chavePixRepository.save(entity);
@@ -98,11 +98,11 @@ public class ChavePixServiceImpl implements ChavePixService{
 
         switch (chavePixDTO.getTipoChave()){
             case (AppConstants.CHAVE_CPF):
-                return ValidadorChaveUtil.isCpfValido(chavePixDTO.getValorChave());
+                return ValidadorChaveUtils.isCpfValido(chavePixDTO.getValorChave());
             case (AppConstants.CHAVE_CELULAR):
-                return ValidadorChaveUtil.isCelularValido(chavePixDTO.getValorChave());
+                return ValidadorChaveUtils.isCelularValido(chavePixDTO.getValorChave());
             case (AppConstants.CHAVE_EMAIL):
-                return ValidadorChaveUtil.isEmailValido(chavePixDTO.getValorChave());
+                return ValidadorChaveUtils.isEmailValido(chavePixDTO.getValorChave());
             default:
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, null);
 
@@ -110,11 +110,11 @@ public class ChavePixServiceImpl implements ChavePixService{
     }
 
     private void validaInformacoesRequest(ChavePixDTO chavePixDTO) throws ClienteServiceException, ChavePixException {
-        if(chavePixRepository.existsByValorChave(chavePixDTO.getValorChave())
+        if(Boolean.TRUE.equals(chavePixRepository.existsByValorChave(chavePixDTO.getValorChave())
                 || isQuantidadeChaveMaiorQueLimite(chavePixDTO.getNumeroConta())
                 || !isTipoContaValida(chavePixDTO.getTipoConta())
-                || chavePixDTO.getNumeroAgencia() >= LIMITE_DIGITOS_NUMERO_AGENCIA
-                || chavePixDTO.getNumeroConta() >= LIMITE_DIGITOS_NUMERO_CONTA)
+                || String.valueOf(chavePixDTO.getNumeroAgencia()).length() > LIMITE_DIGITOS_NUMERO_AGENCIA
+                || String.valueOf(chavePixDTO.getNumeroConta()).length() > LIMITE_DIGITOS_NUMERO_CONTA))
             throw new ChavePixException(null);
     }
 
@@ -146,6 +146,6 @@ public class ChavePixServiceImpl implements ChavePixService{
                 .nomeCorrentista(entity.getNomeCorrentista())
                 .sobrenomeCorrentista(Objects.nonNull(entity.getSobrenomeCorrentista()) ? entity.getSobrenomeCorrentista() : "")
                 .dataHoraInclusaoChave(entity.getCreated())
-                .dataHoraInativacaoChave(entity.getIsActive() ? "" : String.valueOf(entity.getUpdated())).build();
+                .dataHoraInativacaoChave(Boolean.TRUE.equals(entity.getIsActive()) ? "" : String.valueOf(entity.getUpdated())).build();
     }
 }

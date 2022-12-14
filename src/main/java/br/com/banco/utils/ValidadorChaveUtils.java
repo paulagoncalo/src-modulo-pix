@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 @Slf4j
 @UtilityClass
-public class ValidadorChaveUtil {
+public class ValidadorChaveUtils {
 
 
     public Boolean isCelularValido(String celular){
